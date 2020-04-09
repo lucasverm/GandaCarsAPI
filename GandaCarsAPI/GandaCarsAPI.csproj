@@ -44,5 +44,8 @@
    <Folder Include="Data\Mappers\" />
    <Folder Include="Data\Repositories\" />
    <Folder Include="Models\" />
+   <Folder Include="Models\Interfaces\" />
+   <Folder Include="DTO\" />
+   <Folder Include="Controllers\" />
  </ItemGroup>
 </Project>

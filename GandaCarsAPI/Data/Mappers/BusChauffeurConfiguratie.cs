@@ -9,7 +9,7 @@ namespace GandaCarsAPI.Data.Mappers
     {
         public void Configure(EntityTypeBuilder<BusChauffeur> builder)
         {
-            builder.Property(g => g.Naam).IsRequired();
+            builder.Property(g => g.Voornaam).IsRequired();
         }
     }
 }

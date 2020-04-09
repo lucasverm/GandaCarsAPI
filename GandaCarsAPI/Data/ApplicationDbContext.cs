@@ -8,7 +8,7 @@ namespace GandaCarsAPI.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<BusChauffeur> BusChauffeurs { get; set; }
-
+        public DbSet<Dienst> Diensten { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -20,7 +20,7 @@ namespace GandaCarsAPI.Data
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new BusChauffeurConfiguratie());
-
+            builder.ApplyConfiguration(new DienstConfiguratie());
         }
     }
 }

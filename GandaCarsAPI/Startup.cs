@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using GandaCarsAPI.Data;
+using GandaCarsAPI.Data.Repositories;
+using GandaCarsAPI.Models.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,18 +59,14 @@ namespace GandaCarsAPI
                 c.OperationProcessors.Add(new OperationSecurityScopeProcessor("JWT Token"));
             }); //for OpenAPI 3.0 else AddSwaggerDocument();
 
-            //no UI will be added (<-> AddDefaultIdentity)
-
-
             services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2).AddJsonOptions(options => {
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             }); ;
 
-
-
-            //services.AddScoped<IGebruikerRepository, GebruikerRepository>();
+            services.AddScoped<IBusChauffeurRepository, BusChauffeurRepository>();
+            services.AddScoped<IDienstRepository, DienstRepository>();
             services.AddScoped<ApplicationDataInitialiser>();
 
             services.AddCors(options =>
