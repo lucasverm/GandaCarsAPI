@@ -7,6 +7,7 @@ namespace GandaCarsAPI.DTO
         public string Naam { get; set; }
         public DateTime StartUur { get; set; }
         public DateTime EindUur { get; set; }
+        public DayOfWeek Dag { get; set; }
         public DienstDTO() { }
     }
 }

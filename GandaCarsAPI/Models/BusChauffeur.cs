@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace GandaCarsAPI.Models
 {
     public class BusChauffeur
@@ -7,9 +9,10 @@ namespace GandaCarsAPI.Models
         public string Voornaam { get; set; }
         public string Achternaam { get; set; }
         public int Uurloon { get; set; }
+        public List<Dienst> Diensten { get; set; }
         public BusChauffeur()
         {
-          
+            Diensten = new List<Dienst>();
         }
     }
 }

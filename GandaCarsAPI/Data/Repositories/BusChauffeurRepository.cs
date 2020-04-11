@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using GandaCarsAPI.Models;
 using GandaCarsAPI.Models.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GandaCarsAPI.Data.Repositories
 {
@@ -11,6 +11,12 @@ namespace GandaCarsAPI.Data.Repositories
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<BusChauffeur> _busChauffeurs;
+
+        public BusChauffeurRepository(ApplicationDbContext dbContext)
+        {
+            _context = dbContext;
+            _busChauffeurs = dbContext.BusChauffeurs;
+        }
 
         public void Add(BusChauffeur bc)
         {
@@ -25,13 +31,12 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<BusChauffeur> GetAll()
         {
-            return _busChauffeurs.ToList();
-
+            return _busChauffeurs.Include(t => t.Diensten).ToList();
         }
 
         public BusChauffeur GetBy(string id)
         {
-            return _busChauffeurs.SingleOrDefault(r => r.Id == id);
+            return _busChauffeurs.Include(t => t.Diensten).SingleOrDefault(r => r.Id == id);
         }
 
         public void SaveChanges()
