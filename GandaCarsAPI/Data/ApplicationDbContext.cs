@@ -9,7 +9,9 @@ namespace GandaCarsAPI.Data
     {
         public DbSet<BusChauffeur> BusChauffeurs { get; set; }
         public DbSet<Dienst> Diensten { get; set; }
-        public DbSet<Stationnement> stationnementen { get; set; }
+        public DbSet<Stationnement> Stationnementen { get; set; }
+        public DbSet<Feestdag> Feestdagen { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

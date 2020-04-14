@@ -35,6 +35,11 @@ namespace GandaCarsAPI.Data
                     GeboorteDatum = DateTime.Now,
                     Email = "tom.debakker@hotmail.com"
                 };
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine(bc.GeboorteDatum.ToLongDateString());
+                Console.WriteLine(bc.GeboorteDatum.ToLongTimeString());
+                Console.WriteLine(bc.GeboorteDatum.ToString());
+                
                 _dbContext.BusChauffeurs.Add(bc);
                 _dbContext.SaveChanges();
 
@@ -47,7 +52,6 @@ namespace GandaCarsAPI.Data
                     EindDag = DateTime.Now.AddDays(1).DayOfWeek,
                     BusChauffeur = bc
                 };
-                _dbContext.Diensten.Add(d);
                 bc.Diensten.Add(d);
 
                 Stationnement s = new Stationnement()
@@ -55,7 +59,6 @@ namespace GandaCarsAPI.Data
                     AantalMinuten = 45,
                     Percentage = 100,
                 };
-                
 
                 Dienst d2 = new Dienst()
                 {

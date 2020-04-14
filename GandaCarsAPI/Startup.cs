@@ -67,7 +67,8 @@ namespace GandaCarsAPI
 
             services.AddScoped<IBusChauffeurRepository, BusChauffeurRepository>();
             services.AddScoped<IDienstRepository, DienstRepository>();
-            services.AddScoped<IstationnementRepository, stationnementRepository>();
+            services.AddScoped<IstationnementRepository, StationnementRepository>();
+            services.AddScoped<IFeestdagRepository, FeestdagRepository>();
             services.AddScoped<ApplicationDataInitialiser>();
 
             services.AddCors(options =>

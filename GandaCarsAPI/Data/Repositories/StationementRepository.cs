@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GandaCarsAPI.Data.Repositories
 {
-    public class stationnementRepository: IstationnementRepository
+    public class StationnementRepository: IstationnementRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<Stationnement> _stationnementen;
 
-        public stationnementRepository(ApplicationDbContext dbContext)
+        public StationnementRepository(ApplicationDbContext dbContext)
         {
             _context = dbContext;
-            _stationnementen = dbContext.stationnementen;
+            _stationnementen = dbContext.Stationnementen;
         }
-        public stationnementRepository()
+        public StationnementRepository()
         {
         }
 
