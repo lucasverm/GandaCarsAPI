@@ -1,13 +1,16 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace GandaCarsAPI.Models
 {
-    public class Stassionement
+    public class Stationnement
     {
         public String Id { get; set; }
-        public DateTime Beginuur { get; set; }
+        public DateTime StartUur { get; set; }
         public DateTime EindUur { get; set; }
         public Decimal Tarief { get; set; }
-        public Stassionement()
+        public DayOfWeek Dag { get; set; }
+        public Stationnement()
         {
         }
     }

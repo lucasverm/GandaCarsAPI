@@ -12,10 +12,10 @@ namespace GandaCarsAPI.Models
         public DayOfWeek StartDag { get; set; }
         public DayOfWeek EindDag { get; set; }
         public BusChauffeur BusChauffeur { get; set; }
-        public List<Stassionement> Stassionementen { get; set; }
+        public List<Stationnement> stationnementen { get; set; }
         public Dienst()
         {
-            Stassionementen = new List<Stassionement>();
+            stationnementen = new List<Stationnement>();
         }
     }
 }

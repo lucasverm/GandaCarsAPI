@@ -9,6 +9,8 @@ namespace GandaCarsAPI.Models
         public string Voornaam { get; set; }
         public string Achternaam { get; set; }
         public int Uurloon { get; set; }
+        public string Email { get; set; }
+        public DateTime GeboorteDatum { get; set; }
         public List<Dienst> Diensten { get; set; }
         public BusChauffeur()
         {

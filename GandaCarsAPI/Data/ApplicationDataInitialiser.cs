@@ -26,11 +26,14 @@ namespace GandaCarsAPI.Data
 
             if (_dbContext.Database.EnsureCreated())
             {
+
                 BusChauffeur bc = new BusChauffeur()
                 {
-                    Voornaam = "lucas",
-                    Achternaam = "Vermeulen",
-                    Uurloon = 10
+                    Voornaam = "Tom",
+                    Achternaam = "De Bakker",
+                    Uurloon = 11,
+                    GeboorteDatum = DateTime.Now,
+                    Email = "parick@p.com"
                 };
                 _dbContext.BusChauffeurs.Add(bc);
                 _dbContext.SaveChanges();
@@ -39,7 +42,7 @@ namespace GandaCarsAPI.Data
                 {
                     Naam = "dienst1",
                     StartUur = DateTime.Now,
-                    EindUur = DateTime.Now.AddHours(2),
+                    EindUur = DateTime.Now.AddHours(-3),
                     StartDag = DateTime.Now.DayOfWeek,
                     EindDag = DateTime.Now.AddDays(1).DayOfWeek,
                     BusChauffeur = bc
@@ -47,15 +50,26 @@ namespace GandaCarsAPI.Data
                 _dbContext.Diensten.Add(d);
                 bc.Diensten.Add(d);
 
+                Stationnement s = new Stationnement()
+                {
+                    StartUur = DateTime.Now.AddHours(1),
+                    EindUur = DateTime.Now.AddHours(1).AddMinutes(5),
+                    Tarief = 100,
+                    Dag = DateTime.Now.AddDays(2).DayOfWeek
+                };
+                
+
                 Dienst d2 = new Dienst()
                 {
                     Naam = "dienst2",
-                    StartUur = DateTime.Now,
-                    EindUur = DateTime.Now.AddHours(2),
+                    StartUur = DateTime.Now.AddHours(-2),
+                    EindUur = DateTime.Now,
                     StartDag = DateTime.Now.AddDays(2).DayOfWeek,
                     EindDag = DateTime.Now.AddDays(2).DayOfWeek,
-                    BusChauffeur = bc
+                    BusChauffeur = bc,
+                    
                 };
+                d2.stationnementen.Add(s);
                 _dbContext.Diensten.Add(d2);
                 bc.Diensten.Add(d2);
                 _dbContext.SaveChanges();

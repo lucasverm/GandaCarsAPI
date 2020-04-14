@@ -30,13 +30,35 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<Dienst> GetAll()
         {
-            return _dienst.Include(t => t.BusChauffeur).ToList();
+            return _dienst.Include(t => t.BusChauffeur).Include(t => t.stationnementen).ToList();
 
         }
 
         public Dienst GetBy(string id)
         {
-            return _dienst.Include(t => t.BusChauffeur).SingleOrDefault(r => r.Id == id);
+            return _dienst.Include(t => t.BusChauffeur).Include(t => t.stationnementen).SingleOrDefault(r => r.Id == id);
+        }
+
+        public String ValidateDienst(Dienst d)
+        {
+            if ((d.EindDag.GetHashCode() - d.StartDag.GetHashCode() != 1 && d.EindDag.GetHashCode() - d.StartDag.GetHashCode() != 0) && !(d.StartDag.GetHashCode() == 6 && d.EindDag.GetHashCode() == 0))
+            {
+                return "De data van de dienst zijn fout!";
+            }
+            if ((d.EindDag.GetHashCode() == d.StartDag.GetHashCode()) && (d.StartUur > d.EindUur))
+            {
+                return "De start tijd valt voor de eind tijd!";
+            }
+
+            if (d.EindDag.GetHashCode() != d.StartDag.GetHashCode())
+            {
+                if(d.StartUur < d.EindUur)
+                {
+                    return "De dienst duurt te lang!";
+                }
+                
+            }
+            return null;
         }
 
         public void SaveChanges()
@@ -46,7 +68,7 @@ namespace GandaCarsAPI.Data.Repositories
 
         public void Update(Dienst dienst)
         {
-            _context.Update(dienst);
+            _dienst.Update(dienst);
         }
     }
 }

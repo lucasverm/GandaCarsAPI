@@ -52,31 +52,48 @@ namespace GandaCarsAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult<BusChauffeur> PutItem(string id, BusChauffeurDTO dto)
         {
-            if (!dto.Id.Equals(id))
+            try
             {
-                return BadRequest("id's komen niet overeen!");
+                if (!dto.Id.Equals(id))
+                {
+                    return BadRequest("Id's komen niet overeen!");
+                }
+
+                BusChauffeur bc = _busChauffeurRepository.GetBy(id);
+                bc.Voornaam = dto.Voornaam;
+                bc.Achternaam = dto.Achternaam;
+                bc.Uurloon = dto.Uurloon;
+                bc.GeboorteDatum = dto.GeboorteDatum;
+                bc.Email = dto.Email;
+                _busChauffeurRepository.Update(bc);
+                _busChauffeurRepository.SaveChanges();
+                return bc;
             }
-
-            BusChauffeur bc = _busChauffeurRepository.GetBy(id);
-            bc.Voornaam = dto.Voornaam;
-            bc.Achternaam = dto.Achternaam;
-            bc.Uurloon = dto.Uurloon;
-
-            _busChauffeurRepository.Update(bc);
-            _busChauffeurRepository.SaveChanges();
-            return bc;
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
         public ActionResult<BusChauffeur> VoegBusChauffeurToe(BusChauffeurDTO dto)
         {
-            BusChauffeur bc = new BusChauffeur();
-            bc.Voornaam = dto.Voornaam;
-            bc.Achternaam = dto.Achternaam;
-            bc.Uurloon = dto.Uurloon;
-            _busChauffeurRepository.Add(bc);
-            _busChauffeurRepository.SaveChanges();
-            return bc;
+            try
+            {
+                BusChauffeur bc = new BusChauffeur();
+                bc.Voornaam = dto.Voornaam;
+                bc.Achternaam = dto.Achternaam;
+                bc.Uurloon = dto.Uurloon;
+                bc.GeboorteDatum = dto.GeboorteDatum;
+                bc.Email = dto.Email;
+                _busChauffeurRepository.Add(bc);
+                _busChauffeurRepository.SaveChanges();
+                return bc;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

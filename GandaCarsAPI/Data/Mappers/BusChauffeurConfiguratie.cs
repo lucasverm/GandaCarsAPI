@@ -10,7 +10,7 @@ namespace GandaCarsAPI.Data.Mappers
         public void Configure(EntityTypeBuilder<BusChauffeur> builder)
         {
             builder.Property(g => g.Voornaam).IsRequired();
-            builder.HasMany(g => g.Diensten).WithOne().OnDelete(DeleteBehavior.ClientSetNull);
+            builder.HasMany(g => g.Diensten).WithOne();
         }
     }
 }
