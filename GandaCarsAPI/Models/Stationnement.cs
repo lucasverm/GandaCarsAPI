@@ -6,10 +6,8 @@ namespace GandaCarsAPI.Models
     public class Stationnement
     {
         public String Id { get; set; }
-        public DateTime StartUur { get; set; }
-        public DateTime EindUur { get; set; }
-        public Decimal Tarief { get; set; }
-        public DayOfWeek Dag { get; set; }
+        public int AantalMinuten { get; set; }
+        public Decimal Percentage { get; set; }
         public Stationnement()
         {
         }

@@ -100,13 +100,10 @@ namespace GandaCarsAPI.Controllers
             {
                 _stationnementRepository.Delete(s);
             });
-            string req = null;
             dto.stationnementen.ForEach(s =>
             {
-                req = this.ValidateStationnement(s, dienst);
                 _stationnementRepository.Add(s);
             });
-            if (req != null) return BadRequest(req);
             dienst.stationnementen = dto.stationnementen;
 
             string validatie = _dienstRepository.ValidateDienst(dienst);
@@ -118,62 +115,6 @@ namespace GandaCarsAPI.Controllers
             _dienstRepository.SaveChanges();
             return dienst;
 
-        }
-
-        private string ValidateStationnement(Stationnement s, Dienst d)
-        {
-            string req = null;
-            if (d.StartDag != d.EindDag)
-            {
-                if (!(s.Dag == d.StartDag || s.Dag == d.EindDag))
-                {
-                    req = "Het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " is niet correct!";
-                }
-                if (s.Dag == d.StartDag)
-                {
-                    if (d.StartUur >= s.StartUur)
-                    {
-                        req = "Het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " is niet correct!";
-                    }
-
-                    if (s.StartUur >= s.EindUur)
-                    {
-                        req = "Het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " is niet correct!";
-                    }
-                }
-
-                if (s.Dag == d.EindDag)
-                {
-    
-                    if (d.EindUur <= s.EindUur)
-                    {
-                        req = "Het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " is niet correct!";
-                    }
-
-                    if (s.StartUur >= s.EindUur)
-                    {
-                        req = "Het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " is niet correct!";
-                    }
-                }
-
-            }
-            else
-            {
-                if (s.Dag != d.StartDag)
-                {
-                    req = "Het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " is niet correct!";
-                }
-                if (d.StartUur >= s.StartUur || d.EindUur <= s.EindUur)
-                {
-                    req = "Het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " valt niet binnen de dienst.";
-                }
-
-                if (s.StartUur > s.EindUur)
-                {
-                    req = "De uren van het stationnement dat begint om " + s.StartUur.ToShortTimeString() + " zijn niet correct.";
-                }
-            }
-            return req;
         }
 
         [HttpPost]
@@ -194,13 +135,11 @@ namespace GandaCarsAPI.Controllers
             {
                 return BadRequest(validatie);
             }
-            string req = null;
+            
             dto.stationnementen.ForEach(s =>
             {
-                req = this.ValidateStationnement(s, dienst);
                 _stationnementRepository.Add(s);
             });
-            if (req != null) return BadRequest(req);
             dienst.stationnementen = dto.stationnementen;
             _dienstRepository.Add(dienst);
             bc.Diensten.Add(dienst);

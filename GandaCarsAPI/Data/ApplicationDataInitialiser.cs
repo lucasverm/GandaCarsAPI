@@ -33,7 +33,7 @@ namespace GandaCarsAPI.Data
                     Achternaam = "De Bakker",
                     Uurloon = 11,
                     GeboorteDatum = DateTime.Now,
-                    Email = "parick@p.com"
+                    Email = "tom.debakker@hotmail.com"
                 };
                 _dbContext.BusChauffeurs.Add(bc);
                 _dbContext.SaveChanges();
@@ -52,10 +52,8 @@ namespace GandaCarsAPI.Data
 
                 Stationnement s = new Stationnement()
                 {
-                    StartUur = DateTime.Now.AddHours(1),
-                    EindUur = DateTime.Now.AddHours(1).AddMinutes(5),
-                    Tarief = 100,
-                    Dag = DateTime.Now.AddDays(2).DayOfWeek
+                    AantalMinuten = 45,
+                    Percentage = 100,
                 };
                 
 
