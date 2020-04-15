@@ -30,13 +30,13 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<Dienst> GetAll()
         {
-            return _dienst.Include(t => t.BusChauffeur).Include(t => t.stationnementen).ToList();
+            return _dienst.Include(t => t.BusChauffeur).Include(t => t.Stationnementen).ToList();
 
         }
 
         public Dienst GetBy(string id)
         {
-            return _dienst.Include(t => t.BusChauffeur).Include(t => t.stationnementen).SingleOrDefault(r => r.Id == id);
+            return _dienst.Include(t => t.BusChauffeur).Include(t => t.Stationnementen).SingleOrDefault(r => r.Id == id);
         }
 
         public String ValidateDienst(Dienst d)

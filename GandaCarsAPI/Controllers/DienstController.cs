@@ -96,7 +96,7 @@ namespace GandaCarsAPI.Controllers
                 NieuweBc.Diensten.Add(dienst);
                 _busChauffeurRepository.Update(NieuweBc);
             }
-            dienst.stationnementen.ForEach(s =>
+            dienst.Stationnementen.ForEach(s =>
             {
                 _stationnementRepository.Delete(s);
             });
@@ -104,7 +104,7 @@ namespace GandaCarsAPI.Controllers
             {
                 _stationnementRepository.Add(s);
             });
-            dienst.stationnementen = dto.stationnementen;
+            dienst.Stationnementen = dto.stationnementen;
 
             string validatie = _dienstRepository.ValidateDienst(dienst);
             if (validatie != null)
@@ -140,7 +140,7 @@ namespace GandaCarsAPI.Controllers
             {
                 _stationnementRepository.Add(s);
             });
-            dienst.stationnementen = dto.stationnementen;
+            dienst.Stationnementen = dto.stationnementen;
             _dienstRepository.Add(dienst);
             bc.Diensten.Add(dienst);
             _busChauffeurRepository.Update(bc);

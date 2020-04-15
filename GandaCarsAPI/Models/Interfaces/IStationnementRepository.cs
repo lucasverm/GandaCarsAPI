@@ -10,5 +10,6 @@ namespace GandaCarsAPI.Models.Interfaces
         void Add(Stationnement s);
         void SaveChanges();
         Stationnement Delete(Stationnement s);
+        List<Stationnement> DeleteRange(List<Stationnement> s);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GandaCarsAPI.Models;
 using GandaCarsAPI.Models.Interfaces;
@@ -28,6 +29,12 @@ namespace GandaCarsAPI.Data.Repositories
         public Stationnement Delete(Stationnement s)
         {
             _stationnementen.Remove(s);
+            return s;
+        }
+
+        public List<Stationnement> DeleteRange(List<Stationnement> s)
+        {
+            _stationnementen.RemoveRange(s);
             return s;
         }
 
