@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using GandaCarsAPI.Models;
 using GandaCarsAPI.Models.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace GandaCarsAPI.Data.Repositories
         private readonly ApplicationDbContext _context;
         private readonly DbSet<EffectieveDienst> _effectieveDiensten;
 
+
         public EffectieveDienstRepository(ApplicationDbContext dbContext)
         {
             _context = dbContext;
             _effectieveDiensten = dbContext.EffectieveDiensten;
+
         }
 
         public void Add(EffectieveDienst ed)
@@ -32,12 +35,7 @@ namespace GandaCarsAPI.Data.Repositories
 
         public List<EffectieveDienst> GetAllByDatum(DateTime date)
         {
-            return _effectieveDiensten.Where(d => d.Start == date || d.Eind == date).Include(t => t.BusChauffeur).Include(t => t.Stationnementen).ToList();
-        }
-
-        public void DeleteRange(List<EffectieveDienst> ed)
-        {
-            _effectieveDiensten.RemoveRange(ed);
+            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Where(d => d.Start == date || d.Eind == date).Include(t => t.BusChauffeur).Include(t => t.Stationnementen).ToList();
         }
 
         public void Delete(EffectieveDienst ed)
@@ -47,7 +45,7 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<EffectieveDienst> GetAllVan(BusChauffeur bc)
         {
-            return _effectieveDiensten.Where(t => t.BusChauffeur == bc).Include(t => t.BusChauffeur).Include(t => t.Stationnementen).ToList();
+            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Where(t => t.BusChauffeur == bc).Include(t => t.BusChauffeur).Include(t => t.Stationnementen).Include(t => t.GerelateerdeDienst).ToList();
         }
 
         public IEnumerable<EffectieveDienst> GetAllVan(BusChauffeur bc, String jaar, String week)
@@ -60,18 +58,50 @@ namespace GandaCarsAPI.Data.Repositories
 
             int jaartal = Int32.Parse(jaar);
             int weekNummer = Int32.Parse(week);
-            return this.GetAllVan(bc).Where(t => (t.Start.Year == jaartal || t.Eind.Year == jaartal) && (myCal.GetWeekOfYear(t.Start, myCWR, myFirstDOW) == weekNummer || myCal.GetWeekOfYear(t.Eind, myCWR, myFirstDOW) == weekNummer)).ToList();  
+            var uitvoer = this.GetAllVan(bc);
+            uitvoer = uitvoer.Where(t => myCal.GetWeekOfYear(t.Start, myCWR, myFirstDOW) == weekNummer && t.Start.Year == jaartal).ToList();
+            return uitvoer;
         }
 
+        public IEnumerable<EffectieveDienst> DeleteAllVan(BusChauffeur bc, String jaar, String week)
+        {
+            var toDelete = this.GetAllVan(bc, jaar, week).ToList();
+            toDelete.ForEach(t =>
+            {
+                if (this.GetBy(t.Id) != null)
+                {
+                    var gerelateerd = t.GerelateerdeDienst;
+                    t.GerelateerdeDienst = null;
+                    this.Update(t);
+                    this.SaveChanges();
+                    this.Delete(t);
+                    this.SaveChanges();
+                    if (gerelateerd != null)
+                    {
+                        this.Delete(gerelateerd);
+                        this.SaveChanges();
+                    }
+                }
+            });
+
+            return toDelete;
+        }
+
+        public IEnumerable<EffectieveDienst> GetAllByMonth(BusChauffeur bc, String jaar, int maand)
+        {
+            int jaartal = Int32.Parse(jaar);
+            var uitvoer = this.GetAllVan(bc);
+            return uitvoer.Where(t => t.Start.Month == maand && t.Start.Year == jaartal).ToList();
+        }
 
         public IEnumerable<EffectieveDienst> GetAll()
         {
-            return _effectieveDiensten.Include(t => t.BusChauffeur).Include(t => t.Stationnementen).ToList();
+            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Include(t => t.BusChauffeur).Include(t => t.Stationnementen).Include(t => t.GerelateerdeDienst).ToList();
         }
 
         public EffectieveDienst GetBy(string id)
         {
-            return _effectieveDiensten.Include(t => t.BusChauffeur).Include(t => t.Stationnementen).FirstOrDefault(d => d.Id == id);
+            return _effectieveDiensten.Include(t => t.BusChauffeur).Include(t => t.Stationnementen).Include(t => t.GerelateerdeDienst).FirstOrDefault(d => d.Id == id);
         }
 
         public void SaveChanges()
@@ -82,6 +112,12 @@ namespace GandaCarsAPI.Data.Repositories
         public void Update(EffectieveDienst dienst)
         {
             _effectieveDiensten.Update(dienst);
+        }
+
+        public void DeleteRange(List<EffectieveDienst> ed)
+        {
+
+
         }
     }
 }

@@ -35,7 +35,8 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<Feestdag> GetAll()
         {
-            return _feestdagen.ToList();
+            return _feestdagen
+                .OrderBy(t => t.Dag).ToList();
         }
 
         public void SaveChanges()

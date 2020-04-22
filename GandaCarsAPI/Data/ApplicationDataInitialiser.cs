@@ -39,7 +39,7 @@ namespace GandaCarsAPI.Data
                 _dbContext.BusChauffeurs.Add(bc);
                 _dbContext.SaveChanges();
 
-                /*Dienst d = new Dienst()
+                Dienst d = new Dienst()
                 {
                     Naam = "dienst1",
                     StartUur = DateTime.Now,
@@ -48,7 +48,7 @@ namespace GandaCarsAPI.Data
                     EindDag = DateTime.Now.AddDays(1).DayOfWeek,
                     BusChauffeur = bc
                 };
-                bc.Diensten.Add(d);*/
+                bc.Diensten.Add(d);
 
                 Stationnement s = new Stationnement()
                 {

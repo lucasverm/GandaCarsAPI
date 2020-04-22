@@ -25,6 +25,7 @@ namespace GandaCarsAPI.Data
             builder.ApplyConfiguration(new BusChauffeurConfiguratie());
             builder.ApplyConfiguration(new DienstConfiguratie());
             builder.ApplyConfiguration(new stationnementConfiguratie());
+            builder.ApplyConfiguration(new EffectieveDienstConfiguratie());
         }
     }
 }

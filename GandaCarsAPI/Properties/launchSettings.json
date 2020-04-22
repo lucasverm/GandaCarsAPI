@@ -8,6 +8,14 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "GandaCarsAPI": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:5003;http://localhost:5002"
+    },
     "ananauAPI": {
       "commandName": "Project",
       "launchBrowser": true,

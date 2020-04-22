@@ -30,7 +30,7 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<Dienst> GetAll()
         {
-            return _dienst.Include(t => t.BusChauffeur).Include(t => t.Stationnementen).ToList();
+            return _dienst.OrderBy(t => t.DagVanToevoegen).Include(t => t.BusChauffeur).Include(t => t.Stationnementen).ToList();
 
         }
 
