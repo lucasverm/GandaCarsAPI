@@ -11,7 +11,7 @@ namespace GandaCarsAPI.DTO
         public DateTime Start { get; set; }
         public DateTime Einde { get; set; }
         public String BusChauffeurId { get; set; }
-        public List<Stationnement> Stationnementen { get; set; }
+        public int TotaalAantalMinutenStationnement { get; set; }
         public EffectieveDienstDTO() { }
     }
 }

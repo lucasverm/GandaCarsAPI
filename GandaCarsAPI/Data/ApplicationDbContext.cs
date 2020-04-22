@@ -9,7 +9,6 @@ namespace GandaCarsAPI.Data
     {
         public DbSet<BusChauffeur> BusChauffeurs { get; set; }
         public DbSet<Dienst> Diensten { get; set; }
-        public DbSet<Stationnement> Stationnementen { get; set; }
         public DbSet<Feestdag> Feestdagen { get; set; }
         public DbSet<EffectieveDienst> EffectieveDiensten { get; set; }
 
@@ -24,7 +23,6 @@ namespace GandaCarsAPI.Data
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new BusChauffeurConfiguratie());
             builder.ApplyConfiguration(new DienstConfiguratie());
-            builder.ApplyConfiguration(new stationnementConfiguratie());
             builder.ApplyConfiguration(new EffectieveDienstConfiguratie());
         }
     }

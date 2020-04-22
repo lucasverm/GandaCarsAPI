@@ -20,14 +20,12 @@ namespace GandaCarsAPI.Controllers
     {
         private readonly IDienstRepository _dienstRepository;
         private readonly IBusChauffeurRepository _busChauffeurRepository;
-        private readonly IstationnementRepository _stationnementRepository;
 
         public DienstController(IDienstRepository dienstRepository,
-            IBusChauffeurRepository busChauffeurRepository, IstationnementRepository stationnementRepository)
+            IBusChauffeurRepository busChauffeurRepository)
         {
             _dienstRepository = dienstRepository;
             _busChauffeurRepository = busChauffeurRepository;
-            _stationnementRepository = stationnementRepository;
         }
 
         [HttpGet("{id}")]
@@ -72,6 +70,7 @@ namespace GandaCarsAPI.Controllers
             dienst.Naam = dto.Naam;
             dienst.StartDag = dto.StartDag;
             dienst.EindDag = dto.EindDag;
+            dienst.TotaalAantalMinutenStationnement = dto.TotaalAantalMinutenStationnement;
             if (dienst.BusChauffeur != null)
             {
 
@@ -96,15 +95,6 @@ namespace GandaCarsAPI.Controllers
                 NieuweBc.Diensten.Add(dienst);
                 _busChauffeurRepository.Update(NieuweBc);
             }
-            dienst.Stationnementen.ForEach(s =>
-            {
-                _stationnementRepository.Delete(s);
-            });
-            dto.stationnementen.ForEach(s =>
-            {
-                _stationnementRepository.Add(s);
-            });
-            dienst.Stationnementen = dto.stationnementen;
 
             string validatie = _dienstRepository.ValidateDienst(dienst);
             if (validatie != null)
@@ -127,6 +117,7 @@ namespace GandaCarsAPI.Controllers
             dienst.Naam = dto.Naam;
             dienst.StartDag = dto.StartDag;
             dienst.EindDag = dto.EindDag;
+            dienst.TotaalAantalMinutenStationnement = dto.TotaalAantalMinutenStationnement;
             BusChauffeur bc = _busChauffeurRepository.GetBy(dto.BusChauffeurId);
             if (bc == null) BadRequest("De bus chauffeur met opgegeven id kon niet worden gevonden.");
             dienst.BusChauffeur = bc;
@@ -135,12 +126,6 @@ namespace GandaCarsAPI.Controllers
             {
                 return BadRequest(validatie);
             }
-            
-            dto.stationnementen.ForEach(s =>
-            {
-                _stationnementRepository.Add(s);
-            });
-            dienst.Stationnementen = dto.stationnementen;
             _dienstRepository.Add(dienst);
             bc.Diensten.Add(dienst);
             _busChauffeurRepository.Update(bc);

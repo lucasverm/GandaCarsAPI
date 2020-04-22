@@ -46,15 +46,10 @@ namespace GandaCarsAPI.Data
                     EindUur = DateTime.Now.AddHours(-3),
                     StartDag = DateTime.Now.DayOfWeek,
                     EindDag = DateTime.Now.AddDays(1).DayOfWeek,
-                    BusChauffeur = bc
+                    BusChauffeur = bc,
+                    TotaalAantalMinutenStationnement = 45
                 };
                 bc.Diensten.Add(d);
-
-                Stationnement s = new Stationnement()
-                {
-                    AantalMinuten = 45,
-                    Percentage = 100,
-                };
 
                 Dienst d2 = new Dienst()
                 {
@@ -66,7 +61,6 @@ namespace GandaCarsAPI.Data
                     BusChauffeur = bc,
                     
                 };
-                d2.Stationnementen.Add(s);
                 _dbContext.Diensten.Add(d2);
                 bc.Diensten.Add(d2);
                 _dbContext.SaveChanges();

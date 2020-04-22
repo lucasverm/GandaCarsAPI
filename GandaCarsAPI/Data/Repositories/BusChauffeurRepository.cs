@@ -31,12 +31,12 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<BusChauffeur> GetAll()
         {
-            return _busChauffeurs.OrderBy(t => t.Achternaam).Include(t => t.Diensten).ThenInclude(t => t.Stationnementen).ToList();
+            return _busChauffeurs.OrderBy(t => t.Achternaam).Include(t => t.Diensten).ToList();
         }
 
         public BusChauffeur GetBy(string id)
         {
-            return _busChauffeurs.Include(t => t.Diensten).ThenInclude(t => t.Stationnementen).SingleOrDefault(r => r.Id == id);
+            return _busChauffeurs.Include(t => t.Diensten).SingleOrDefault(r => r.Id == id);
         }
 
         public void SaveChanges()

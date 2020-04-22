@@ -13,7 +13,7 @@ namespace GandaCarsAPI.DTO
         public DayOfWeek StartDag { get; set; }
         public DayOfWeek EindDag { get; set; }
         public String BusChauffeurId { get; set; }
-        public List<Stationnement> stationnementen { get; set; }
+        public int TotaalAantalMinutenStationnement { get; set; }
         public DienstDTO() { }
     }
 }
