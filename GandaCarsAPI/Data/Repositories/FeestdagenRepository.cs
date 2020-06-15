@@ -18,11 +18,6 @@ namespace GandaCarsAPI.Data.Repositories
             _feestdagen = dbContext.Feestdagen;
         }
 
-        public FeestdagRepository()
-        {
-
-        }
-
         public void AddRange(IEnumerable<Feestdag> fden)
         {
             _feestdagen.AddRange(fden);

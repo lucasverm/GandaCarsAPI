@@ -46,9 +46,9 @@ namespace GandaCarsAPI
             services.AddOpenApiDocument(c =>
             {
                 c.DocumentName = "apidocs";
-                c.Title = "Kolveniershof API";
+                c.Title = "Ganda Cars API";
                 c.Version = "v1";
-                c.Description = "The Kolveniershof API documentation description.";
+                c.Description = "The Ganda Cars API documentation description.";
                 c.DocumentProcessors.Add(new SecurityDefinitionAppender("JWT Token", new SwaggerSecurityScheme
                 {
                     Type = SwaggerSecuritySchemeType.ApiKey,
@@ -69,6 +69,8 @@ namespace GandaCarsAPI
             services.AddScoped<IDienstRepository, DienstRepository>();
             services.AddScoped<IFeestdagRepository, FeestdagRepository>();
             services.AddScoped<IEffectieveDienstRepository, EffectieveDienstRepository>();
+            services.AddScoped<IInstellingenRepository, InstellingenRepository>();
+            services.AddScoped<IOnderbrekingRepository, OnderbrekingRepository>();
             services.AddScoped<ApplicationDataInitialiser>();
 
             services.AddCors(options =>

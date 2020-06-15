@@ -36,7 +36,7 @@ namespace GandaCarsAPI.Data.Repositories
 
         public BusChauffeur GetBy(string id)
         {
-            return _busChauffeurs.Include(t => t.Diensten).SingleOrDefault(r => r.Id == id);
+            return _busChauffeurs.Include(t => t.Diensten).ThenInclude(t => t.Onderbrekingen).SingleOrDefault(r => r.Id == id);
         }
 
         public void SaveChanges()

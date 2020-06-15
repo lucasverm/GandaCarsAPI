@@ -19,13 +19,15 @@ namespace GandaCarsAPI.Controllers
         private readonly IDienstRepository _dienstRepository;
         private readonly IEffectieveDienstRepository _effectieveDienstRepository;
         private readonly IBusChauffeurRepository _busChauffeurRepository;
+        private readonly IOnderbrekingRepository _onderbrekingsRepository;
 
         public EffectieveDienstenController(IEffectieveDienstRepository effectieveDienstRepository, IDienstRepository dienstRepository,
-            IBusChauffeurRepository busChauffeurRepository)
+            IBusChauffeurRepository busChauffeurRepository, IOnderbrekingRepository onderbrekingRepository)
         {
             _effectieveDienstRepository = effectieveDienstRepository;
             _dienstRepository = dienstRepository;
             _busChauffeurRepository = busChauffeurRepository;
+            _onderbrekingsRepository = onderbrekingRepository;
         }
 
 
@@ -55,23 +57,35 @@ namespace GandaCarsAPI.Controllers
             ed.ForEach(dienst =>
             {
                 EffectieveDienst hoofdDienst = new EffectieveDienst();
+                dienst.Onderbrekingen.ForEach(s =>
+                {
+                    var stass = _onderbrekingsRepository.GetBy(s.Id);
+                    if (stass != null)
+                    {
+                        _onderbrekingsRepository.Delete(stass);
+                    }
+                    s.Id = null;
+                    hoofdDienst.Onderbrekingen.Add(s);
+                });
+                hoofdDienst.Onderbrekingen = dienst.Onderbrekingen;
                 hoofdDienst.BusChauffeur = bc;
                 hoofdDienst.TotaalAantalMinutenStationnement = dienst.TotaalAantalMinutenStationnement;
                 hoofdDienst.Naam = dienst.Naam;
+                hoofdDienst.AndereMinuten = dienst.AndereMinuten;
                 if (dienst.Start.DayOfWeek == dienst.Einde.DayOfWeek)
                 {
                     hoofdDienst.Start = dienst.Start;
-                    hoofdDienst.Eind = dienst.Einde;
+                    hoofdDienst.Einde = dienst.Einde;
                     effectieveDienstenToUpload.Add(hoofdDienst);
                 }
                 else
                 {
                     EffectieveDienst gerelateerdeDienst = new EffectieveDienst();
                     hoofdDienst.Start = dienst.Start;
-                    hoofdDienst.Eind = dienst.Start.AddHours(-dienst.Start.Hour).AddMinutes(-dienst.Start.Minute).AddDays(1); gerelateerdeDienst.BusChauffeur = bc;
+                    hoofdDienst.Einde = dienst.Start.AddHours(-dienst.Start.Hour).AddMinutes(-dienst.Start.Minute).AddDays(1); gerelateerdeDienst.BusChauffeur = bc;
                     gerelateerdeDienst.Naam = dienst.Naam;
                     gerelateerdeDienst.Start = dienst.Einde.AddHours(-dienst.Einde.Hour).AddMinutes(-dienst.Einde.Minute);
-                    gerelateerdeDienst.Eind = dienst.Einde;
+                    gerelateerdeDienst.Einde = dienst.Einde;
                     _effectieveDienstRepository.Add(gerelateerdeDienst);
                     hoofdDienst.GerelateerdeDienst = gerelateerdeDienst;
                     _effectieveDienstRepository.Add(hoofdDienst);
@@ -126,9 +140,20 @@ namespace GandaCarsAPI.Controllers
                         EffectieveDienst ed = new EffectieveDienst();
                         ed.BusChauffeur = bc;
                         ed.Naam = dienst.Naam;
+                        ed.AndereMinuten = 0;
+                        dienst.Onderbrekingen.ForEach(ondTemplate =>
+                        {
+                            Onderbreking ondEffectief = new Onderbreking()
+                            {
+                                Id = null,
+                                EffectieveStart = eersteDagVanWeek.AddDays(ondTemplate.StartDag.GetHashCode() == 0 ? 6 : ondTemplate.StartDag.GetHashCode() - 1).AddHours(ondTemplate.StartUur.Hour).AddMinutes(ondTemplate.StartUur.Minute),
+                                EffectiefEinde = eersteDagVanWeek.AddDays(ondTemplate.EindDag.GetHashCode() == 0 ? 6 : ondTemplate.EindDag.GetHashCode() - 1).AddHours(ondTemplate.EindUur.Hour).AddMinutes(ondTemplate.EindUur.Minute)
+                            };
+                            ed.Onderbrekingen.Add(ondEffectief);
+                        });
                         ed.TotaalAantalMinutenStationnement = dienst.TotaalAantalMinutenStationnement;
                         ed.Start = eersteDagVanWeek.AddDays(dienst.StartDag.GetHashCode() == 0 ? 6 : dienst.StartDag.GetHashCode() - 1).AddHours(dienst.StartUur.Hour).AddMinutes(dienst.StartUur.Minute);
-                        ed.Eind = eersteDagVanWeek.AddDays(dienst.EindDag.GetHashCode() == 0 ? 6 : dienst.EindDag.GetHashCode() - 1).AddHours(dienst.EindUur.Hour).AddMinutes(dienst.EindUur.Minute);
+                        ed.Einde = eersteDagVanWeek.AddDays(dienst.EindDag.GetHashCode() == 0 ? 6 : dienst.EindDag.GetHashCode() - 1).AddHours(dienst.EindUur.Hour).AddMinutes(dienst.EindUur.Minute);
                         _effectieveDienstRepository.Add(ed);
                     }
                     else
@@ -137,6 +162,19 @@ namespace GandaCarsAPI.Controllers
                         EffectieveDienst edEind = new EffectieveDienst();
                         edStart.BusChauffeur = bc;
                         edStart.Naam = dienst.Naam;
+                        edStart.AndereMinuten = 0;
+                        dienst.Onderbrekingen.ForEach(ondTemplate =>
+                        {
+                            Onderbreking ondEffectief = new Onderbreking()
+                            {
+                                Id = null,
+                                EffectieveStart = eersteDagVanWeek.AddDays(ondTemplate.StartDag.GetHashCode() == 0 ? 6 : ondTemplate.StartDag.GetHashCode() - 1).AddHours(ondTemplate.StartUur.Hour).AddMinutes(ondTemplate.StartUur.Minute),
+                                EffectiefEinde = eersteDagVanWeek.AddDays(ondTemplate.EindDag.GetHashCode() == 0 ? 6 : ondTemplate.EindDag.GetHashCode() - 1).AddHours(ondTemplate.EindUur.Hour).AddMinutes(ondTemplate.EindUur.Minute)
+                            };
+                            edStart.Onderbrekingen.Add(ondEffectief);
+                            edEind.Onderbrekingen.Add(ondEffectief);
+                        });
+
                         edStart.TotaalAantalMinutenStationnement = dienst.TotaalAantalMinutenStationnement;
                         var startDag = dienst.StartDag.GetHashCode();
                         var eindDag = dienst.EindDag.GetHashCode();
@@ -157,13 +195,13 @@ namespace GandaCarsAPI.Controllers
                             eindDag = eindDag - 1;
                         }
                         edStart.Start = eersteDagVanWeek.AddDays(startDag).AddHours(dienst.StartUur.Hour).AddMinutes(dienst.StartUur.Minute);
-                        edStart.Eind = eersteDagVanWeek.AddDays(startDag).AddDays(1);
+                        edStart.Einde = eersteDagVanWeek.AddDays(startDag).AddDays(1);
 
                         edEind.BusChauffeur = bc;
                         edEind.Naam = dienst.Naam;
 
                         edEind.Start = eersteDagVanWeek.AddDays(eindDag);
-                        edEind.Eind = eersteDagVanWeek.AddDays(eindDag).AddHours(dienst.EindUur.Hour).AddMinutes(dienst.EindUur.Minute);
+                        edEind.Einde = eersteDagVanWeek.AddDays(eindDag).AddHours(dienst.EindUur.Hour).AddMinutes(dienst.EindUur.Minute);
                         _effectieveDienstRepository.Add(edEind);
                         edStart.GerelateerdeDienst = edEind;
                         _effectieveDienstRepository.Add(edStart);

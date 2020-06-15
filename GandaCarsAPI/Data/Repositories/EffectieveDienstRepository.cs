@@ -35,7 +35,7 @@ namespace GandaCarsAPI.Data.Repositories
 
         public List<EffectieveDienst> GetAllByDatum(DateTime date)
         {
-            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Where(d => d.Start == date || d.Eind == date).Include(t => t.BusChauffeur).ToList();
+            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Where(d => d.Start == date || d.Einde == date).Include(t => t.BusChauffeur).Include(t => t.Onderbrekingen).ToList();
         }
 
         public void Delete(EffectieveDienst ed)
@@ -45,7 +45,7 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<EffectieveDienst> GetAllVan(BusChauffeur bc)
         {
-            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Where(t => t.BusChauffeur == bc).Include(t => t.BusChauffeur).Include(t => t.GerelateerdeDienst).ToList();
+            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Where(t => t.BusChauffeur == bc).Include(t => t.BusChauffeur).Include(t => t.Onderbrekingen).Include(t => t.GerelateerdeDienst).ToList();
         }
 
         public IEnumerable<EffectieveDienst> GetAllVan(BusChauffeur bc, String jaar, String week)
@@ -96,12 +96,12 @@ namespace GandaCarsAPI.Data.Repositories
 
         public IEnumerable<EffectieveDienst> GetAll()
         {
-            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Include(t => t.BusChauffeur).Include(t => t.GerelateerdeDienst).ToList();
+            return _effectieveDiensten.OrderBy(t => t.DagVanToevoegen).Include(t => t.Onderbrekingen).Include(t => t.BusChauffeur).Include(t => t.GerelateerdeDienst).ToList();
         }
 
         public EffectieveDienst GetBy(string id)
         {
-            return _effectieveDiensten.Include(t => t.BusChauffeur).Include(t => t.GerelateerdeDienst).FirstOrDefault(d => d.Id == id);
+            return _effectieveDiensten.Include(t => t.BusChauffeur).Include(t => t.Onderbrekingen).Include(t => t.GerelateerdeDienst).FirstOrDefault(d => d.Id == id);
         }
 
         public void SaveChanges()

@@ -11,6 +11,8 @@ namespace GandaCarsAPI.Data
         public DbSet<Dienst> Diensten { get; set; }
         public DbSet<Feestdag> Feestdagen { get; set; }
         public DbSet<EffectieveDienst> EffectieveDiensten { get; set; }
+        public DbSet<Instellingen> Instellingen { get; set; }
+        public DbSet<Onderbreking> Onderbrekingen { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

@@ -48,7 +48,18 @@ namespace GandaCarsAPI.Data
                     EindDag = DateTime.Now.AddDays(1).DayOfWeek,
                     BusChauffeur = bc,
                     TotaalAantalMinutenStationnement = 45
+                  
                 };
+
+                Onderbreking o = new Onderbreking()
+                {
+                    StartDag = DateTime.Now.DayOfWeek,
+                    EindDag = DateTime.Now.DayOfWeek,
+                    StartUur = DateTime.Now.AddHours(2),
+                    EindUur = DateTime.Now.AddHours(3),
+                };
+                d.Onderbrekingen.Add(o);
+
                 bc.Diensten.Add(d);
 
                 Dienst d2 = new Dienst()

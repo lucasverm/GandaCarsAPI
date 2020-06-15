@@ -14,9 +14,11 @@ namespace GandaCarsAPI.Models
         public DateTime DagVanToevoegen { get; set; }
         public BusChauffeur BusChauffeur { get; set; }
         public int TotaalAantalMinutenStationnement { get; set; }
+        public List<Onderbreking> Onderbrekingen { get; set; }
         public Dienst()
         {
             DagVanToevoegen = DateTime.Now;
+            Onderbrekingen = new List<Onderbreking>();
         }
     }
 }

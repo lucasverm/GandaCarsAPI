@@ -20,12 +20,14 @@ namespace GandaCarsAPI.Controllers
     {
         private readonly IDienstRepository _dienstRepository;
         private readonly IBusChauffeurRepository _busChauffeurRepository;
+        private readonly IOnderbrekingRepository _onderbrekingRepository;
 
         public DienstController(IDienstRepository dienstRepository,
-            IBusChauffeurRepository busChauffeurRepository)
+            IBusChauffeurRepository busChauffeurRepository, IOnderbrekingRepository onderbrekingRepository)
         {
             _dienstRepository = dienstRepository;
             _busChauffeurRepository = busChauffeurRepository;
+            _onderbrekingRepository = onderbrekingRepository;
         }
 
         [HttpGet("{id}")]
@@ -69,12 +71,15 @@ namespace GandaCarsAPI.Controllers
             dienst.EindUur = dto.EindUur;
             dienst.Naam = dto.Naam;
             dienst.StartDag = dto.StartDag;
+            _onderbrekingRepository.DeleteRange(dienst.Onderbrekingen);
+            _onderbrekingRepository.SaveChanges();
+            _onderbrekingRepository.AddRange(dto.Onderbrekingen);
+            _onderbrekingRepository.SaveChanges();
+            dienst.Onderbrekingen = dto.Onderbrekingen;
             dienst.EindDag = dto.EindDag;
             dienst.TotaalAantalMinutenStationnement = dto.TotaalAantalMinutenStationnement;
             if (dienst.BusChauffeur != null)
             {
-
-
                 if (dienst.BusChauffeur.Id != dto.BusChauffeurId)
                 {
                     BusChauffeur OudeBc = _busChauffeurRepository.GetBy(dienst.BusChauffeur.Id);
@@ -115,6 +120,9 @@ namespace GandaCarsAPI.Controllers
             dienst.StartUur = dto.StartUur;
             dienst.EindUur = dto.EindUur;
             dienst.Naam = dto.Naam;
+            dienst.Onderbrekingen.ForEach(t => t.Id = null);
+            dienst.Onderbrekingen.AddRange(dto.Onderbrekingen);
+            dienst.Onderbrekingen = dto.Onderbrekingen;
             dienst.StartDag = dto.StartDag;
             dienst.EindDag = dto.EindDag;
             dienst.TotaalAantalMinutenStationnement = dto.TotaalAantalMinutenStationnement;
