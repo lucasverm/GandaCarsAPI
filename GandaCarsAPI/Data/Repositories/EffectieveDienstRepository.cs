@@ -119,5 +119,24 @@ namespace GandaCarsAPI.Data.Repositories
 
 
         }
+
+        public String ValidateOnderbrekingMetEffectieveDienst(EffectieveDienst d, Onderbreking o)
+        {
+            if (o.EffectieveStart > o.EffectiefEinde)
+            {
+                return "Het einde van de onderbreking die start op " + o.EffectieveStart + " van dienst \"" + d.Naam + "\" ligt voor de start.";
+            }
+            else if (d.Start > o.EffectieveStart)
+            {
+                return "De start van de onderbreking die start op " + o.EffectieveStart + " van dienst \"" + d.Naam + "\" ligt voor de start van de dienst!";
+            }
+            else if ((d.GerelateerdeDienst == null && d.Einde < o.EffectiefEinde) || (d.GerelateerdeDienst != null && d.GerelateerdeDienst.Einde < o.EffectiefEinde))
+            {
+
+                return "Het einde van de onderbreking die start op " + o.EffectieveStart + " van dienst \"" + d.Naam + "\" ligt na het einde van de dienst!";
+            }
+
+            return null;
+        }
     }
 }

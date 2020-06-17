@@ -65,17 +65,11 @@ namespace GandaCarsAPI.Controllers
             {
                 return BadRequest("id's komen niet overeen!");
             }
-
             Dienst dienst = _dienstRepository.GetBy(id);
             dienst.StartUur = dto.StartUur;
             dienst.EindUur = dto.EindUur;
             dienst.Naam = dto.Naam;
             dienst.StartDag = dto.StartDag;
-            _onderbrekingRepository.DeleteRange(dienst.Onderbrekingen);
-            _onderbrekingRepository.SaveChanges();
-            _onderbrekingRepository.AddRange(dto.Onderbrekingen);
-            _onderbrekingRepository.SaveChanges();
-            dienst.Onderbrekingen = dto.Onderbrekingen;
             dienst.EindDag = dto.EindDag;
             dienst.TotaalAantalMinutenStationnement = dto.TotaalAantalMinutenStationnement;
             if (dienst.BusChauffeur != null)
@@ -90,7 +84,6 @@ namespace GandaCarsAPI.Controllers
                     dienst.BusChauffeur = NieuweBc;
                     NieuweBc.Diensten.Add(dienst);
                     _busChauffeurRepository.Update(NieuweBc);
-
                 }
             }
             else
@@ -100,12 +93,23 @@ namespace GandaCarsAPI.Controllers
                 NieuweBc.Diensten.Add(dienst);
                 _busChauffeurRepository.Update(NieuweBc);
             }
-
             string validatie = _dienstRepository.ValidateDienst(dienst);
             if (validatie != null)
             {
                 return BadRequest(validatie);
             }
+            string request = null;
+            dto.Onderbrekingen.ForEach(onderbreking =>
+            {
+                request = this._dienstRepository.ValidateOnderbrekingMetDienst(dienst, onderbreking);
+                if (request != null) return;
+            });
+            if (request != null) return BadRequest(request);
+            _onderbrekingRepository.DeleteRange(dienst.Onderbrekingen);
+            _onderbrekingRepository.SaveChanges();
+            _onderbrekingRepository.AddRange(dto.Onderbrekingen);
+            _onderbrekingRepository.SaveChanges();
+            dienst.Onderbrekingen = dto.Onderbrekingen;
             _dienstRepository.Update(dienst);
             _dienstRepository.SaveChanges();
             return dienst;
@@ -120,9 +124,7 @@ namespace GandaCarsAPI.Controllers
             dienst.StartUur = dto.StartUur;
             dienst.EindUur = dto.EindUur;
             dienst.Naam = dto.Naam;
-            dienst.Onderbrekingen.ForEach(t => t.Id = null);
-            dienst.Onderbrekingen.AddRange(dto.Onderbrekingen);
-            dienst.Onderbrekingen = dto.Onderbrekingen;
+            
             dienst.StartDag = dto.StartDag;
             dienst.EindDag = dto.EindDag;
             dienst.TotaalAantalMinutenStationnement = dto.TotaalAantalMinutenStationnement;
@@ -134,6 +136,16 @@ namespace GandaCarsAPI.Controllers
             {
                 return BadRequest(validatie);
             }
+            string request = null;
+            dto.Onderbrekingen.ForEach(onderbreking =>
+            {
+                request = this._dienstRepository.ValidateOnderbrekingMetDienst(dienst, onderbreking);
+                if (request != null) return;
+            });
+            if (request != null) return BadRequest(request);
+            dienst.Onderbrekingen.ForEach(t => t.Id = null);
+            dienst.Onderbrekingen.AddRange(dto.Onderbrekingen);
+            dienst.Onderbrekingen = dto.Onderbrekingen;
             _dienstRepository.Add(dienst);
             bc.Diensten.Add(dienst);
             _busChauffeurRepository.Update(bc);

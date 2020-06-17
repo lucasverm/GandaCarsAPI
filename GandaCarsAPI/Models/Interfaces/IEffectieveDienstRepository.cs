@@ -17,6 +17,8 @@ namespace GandaCarsAPI.Models.Interfaces
         void Delete(EffectieveDienst ed);
         void Update(EffectieveDienst ed);
         void SaveChanges();
-        
+        String ValidateOnderbrekingMetEffectieveDienst(EffectieveDienst d, Onderbreking o);
+
+
     }
 }

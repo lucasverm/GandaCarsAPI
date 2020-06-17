@@ -42,6 +42,7 @@ namespace GandaCarsAPI.Controllers
         [HttpPost("{jaar}/{week}/{busChauffeurId}")]
         public ActionResult<IEnumerable<EffectieveDienst>> PostEffectieveDiensten(List<EffectieveDienstDTO> ed, string jaar, string week, string busChauffeurId)
         {
+            string request = null;
             BusChauffeur bc = _busChauffeurRepository.GetBy(busChauffeurId);
             if (bc == null) return BadRequest("De buschauffeur met opgegeven id kon niet worden gevonden.");
             string req = "";
@@ -57,17 +58,6 @@ namespace GandaCarsAPI.Controllers
             ed.ForEach(dienst =>
             {
                 EffectieveDienst hoofdDienst = new EffectieveDienst();
-                dienst.Onderbrekingen.ForEach(s =>
-                {
-                    var stass = _onderbrekingsRepository.GetBy(s.Id);
-                    if (stass != null)
-                    {
-                        _onderbrekingsRepository.Delete(stass);
-                    }
-                    s.Id = null;
-                    hoofdDienst.Onderbrekingen.Add(s);
-                });
-                hoofdDienst.Onderbrekingen = dienst.Onderbrekingen;
                 hoofdDienst.BusChauffeur = bc;
                 hoofdDienst.TotaalAantalMinutenStationnement = dienst.TotaalAantalMinutenStationnement;
                 hoofdDienst.Naam = dienst.Naam;
@@ -94,7 +84,22 @@ namespace GandaCarsAPI.Controllers
                     _effectieveDienstRepository.Update(gerelateerdeDienst);
 
                 }
+                dienst.Onderbrekingen.ForEach(onderbreking =>
+                {
+                    request = _effectieveDienstRepository.ValidateOnderbrekingMetEffectieveDienst(hoofdDienst, onderbreking);
+                    if (request != null) return;
+                    var stass = _onderbrekingsRepository.GetBy(onderbreking.Id);
+                    if (stass != null)
+                    {
+                        _onderbrekingsRepository.Delete(stass);
+                    }
+                    onderbreking.Id = null;
+                    hoofdDienst.Onderbrekingen.Add(onderbreking);
+                });
+                if (request != null) return;
+                hoofdDienst.Onderbrekingen = dienst.Onderbrekingen;
             });
+            if (request != null) return BadRequest(request);
             _effectieveDienstRepository.AddRange(effectieveDienstenToUpload);
             _effectieveDienstRepository.SaveChanges();
             if (req != "") return BadRequest(req);
